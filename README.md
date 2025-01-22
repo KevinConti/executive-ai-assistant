@@ -25,22 +25,36 @@ Table of contents
 ### Env
 
 1. Fork and then clone this repo. Note: make sure to fork it first, as in order to deploy this you will need your own repo.
-2. Create a Python virtualenv and activate it (e.g. `pyenv virtualenv 3.11.1 eaia`, `pyenv activate eaia`)
+2. Create a Python virtualenv and activate it:
+   - Unix/Mac: Using pyenv: `pyenv virtualenv 3.11.1 eaia`, `pyenv activate eaia`
+   - Windows: 
+     1. Create virtualenv: `python -m venv .venv`
+     2. Activate virtualenv: `.\.venv\Scripts\activate`
 3. Run `pip install -e .` to install dependencies and the package
 
 ### Set up credentials
 
-1. Export OpenAI API key (`export OPENAI_API_KEY=...`)
-2. Export Anthropic API key (`export ANTHROPIC_API_KEY=...`)
+1. Set OpenAI API key:
+   - Unix/Mac: `export OPENAI_API_KEY=...`
+   - Windows: `$env:OPENAI_API_KEY="..."`
+2. Set Anthropic API key:
+   - Unix/Mac: `export ANTHROPIC_API_KEY=...`
+   - Windows: `$env:ANTHROPIC_API_KEY="..."`
 3. Enable Google
    1. [Enable the API](https://developers.google.com/gmail/api/quickstart/python#enable_the_api)
       - Enable Gmail API if not already by clicking the blue button `Enable the API`
    2. [Authorize credentials for a desktop application](https://developers.google.com/gmail/api/quickstart/python#authorize_credentials_for_a_desktop_application)
       1. Download the client secret. After that, run these commands:
-      2. `mkdir eaia/.secrets` - This will create a folder for secrets
-      3. `mv ${PATH-TO-CLIENT-SECRET.JSON} eaia/.secrets/secrets.json` - This will move the client secret you just created to that secrets folder
+      2. Create secrets directory:
+         - Unix/Mac: `mkdir eaia/.secrets`
+         - Windows: `mkdir eaia\.secrets`
+      3. Move client secret (replace PATH-TO-CLIENT-SECRET.JSON with your actual path):
+         - Unix/Mac: `mv ${PATH-TO-CLIENT-SECRET.JSON} eaia/.secrets/secrets.json`
+         - Windows: `move PATH-TO-CLIENT-SECRET.JSON eaia\.secrets\secrets.json`
       4. `python scripts/setup_gmail.py` - This will generate another file at `eaia/.secrets/token.json` for accessing Google services.
-4. Export LangSmith API key (`export LANGSMITH_API_KEY`)
+4. Set LangSmith API key:
+   - Unix/Mac: `export LANGSMITH_API_KEY=...`
+   - Windows: `$env:LANGSMITH_API_KEY="..."`
 
 ### Configuration
 
