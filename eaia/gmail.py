@@ -109,13 +109,35 @@ def create_message(sender, to, subject, message_text, thread_id, original_messag
 def get_recipients(
     headers,
     email_address,
-    addn_receipients=None,
+    addn_recipients=None,
 ):
-    recipients = set(addn_receipients or [])
+    recipients = set(addn_recipients or [])
     sender = None
     for header in headers:
         if header["name"].lower() in ["to", "cc"]:
-            recipients.update(header["value"].replace(" ", "").split(","))
+            value = header["value"]
+            addresses = []
+            start = 0
+            in_quotes = False
+            
+            # Parse addresses character by character to handle all edge cases
+            for i, char in enumerate(value):
+                if char == '"':
+                    in_quotes = not in_quotes
+                elif char == ',' and not in_quotes and i + 1 < len(value):
+                    # Only split on commas outside of quotes and ensure there's a next character
+                    if value[i + 1] == ' ':
+                        addr = value[start:i].strip()
+                        if addr:  # Skip empty addresses
+                            addresses.append(addr)
+                        start = i + 2  # Skip the comma and space
+            
+            # Add the last address
+            last_addr = value[start:].strip()
+            if last_addr:
+                addresses.append(last_addr)
+                
+            recipients.update(addresses)
         if header["name"].lower() == "from":
             sender = header["value"]
     if sender:
@@ -137,7 +159,7 @@ def send_email(
     email_address,
     gmail_token: str | None = None,
     gmail_secret: str | None = None,
-    addn_receipients=None,
+    addn_recipients=None,
 ):
     creds = get_credentials(gmail_token, gmail_secret)
 
@@ -151,7 +173,7 @@ def send_email(
     thread_id = message["threadId"]
 
     # Get recipients and sender
-    recipients = get_recipients(headers, email_address, addn_receipients)
+    recipients = get_recipients(headers, email_address, addn_recipients)
 
     # Create the response
     subject = next(
